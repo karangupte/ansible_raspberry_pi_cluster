@@ -1,0 +1,44 @@
+---
+# Resource manager vars 
+master_host: 192.168.126.101
+resource_manager_port: 9000
+
+# Variables for configuring the HDFS / Yarn environment
+mapreduce_framework_name: yarn
+
+# Hadoop and Spark home 
+hadoop_home: "{{ installation_home }}/hadoop_tmp"
+spark_home: "{{ installation_home }}/spark_tmp"
+
+# Hadoop and Spark conf home 
+hadoop_conf_home: "{{ hadoop_home }}/etc/hadoop"
+spark_conf_home: "{{ spark_home }}/conf"
+
+# Location of data on namenode and datanode filesystems - hdfs-site.xml
+datanode_data_dir: "{{ hadoop_home }}/hdfs/datanode"
+namenode_name_dir: "{{ hadoop_home }}/hdfs/namenode"
+
+# Number of times a block is copied across cluster - hdfs-site.xml
+dfs_replication: 1
+
+# Yarn mapreduce memory configs - mapred-site.xml
+yarn_mapreduce_resource_mb: 512
+mapreduce_map_memory_mb: 256
+mapreduce_reduce_memory_mb: 256
+
+# Yarn Settings - yarn-site.xml
+yarn_acl_enable: 0
+yarn_scheduler_minimum_allocation_mb: 512
+yarn_scheduler_maximum_allocation_mb: 4096
+yarn_nodemanager_resource_memory_mb: 4096
+
+# Spark defaults 
+spark_master: yarn
+spark_driver_memory: 2g
+spark_yarn_am_memory: 1g
+spark_executor_memory: 2g
+spark_executor_cores: 4
+spark_history_server_ui_port: 18080
+spark_history_fs_update_interval_seconds: 60
+spark_event_log_dir_hdfs: /spark-logs
+

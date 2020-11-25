@@ -1,0 +1,9 @@
+---
+# tasks file for format_hdfs_create_required_dirs
+
+
+- name: Format HDFS Namenode (This will wipe out any existing data)
+  shell: hdfs namenode -format -force
+
+- name: Create a Spark event log directory in HDFS 
+  shell: hdfs dfs -mkdir /spark-logs

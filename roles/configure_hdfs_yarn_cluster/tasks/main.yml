@@ -1,0 +1,46 @@
+---
+# tasks file for configure_hdfs_yarn_cluster
+- name: Generate and copy core-site.xml
+  template:
+    src: roles/configure_hdfs_yarn_cluster/templates/core-site.xml.j2
+    dest: "{{ hadoop_conf_home }}/core-site.xml"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy hdfs-site.xml
+  template:
+    src: roles/configure_hdfs_yarn_cluster/templates/hdfs-site.xml.j2
+    dest: "{{ hadoop_conf_home }}/hdfs-site.xml"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy mapred-site.xml
+  template:
+    src: roles/configure_hdfs_yarn_cluster/templates/mapred-site.xml.j2
+    dest: "{{ hadoop_conf_home }}/mapred-site.xml"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy yarn-site.xml
+  template:
+    src: roles/configure_hdfs_yarn_cluster/templates/yarn-site.xml.j2
+    dest: "{{ hadoop_conf_home }}/yarn-site.xml"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy spark-defaults.conf
+  template:
+    src: roles/configure_hdfs_yarn_cluster/templates/spark-defaults.conf.j2
+    dest: "{{ spark_conf_home }}/spark-defaults.conf"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo

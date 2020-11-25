@@ -1,0 +1,55 @@
+---
+# tasks file for install_apache_hadoop
+- name: Print downloads_location var
+  debug:
+    msg: "{{ downloads_location }}"
+
+- name: Print inventory hostname
+  debug: 
+    msg: "{{ inventory_hostname }}"
+
+- name: Make downloads folder on Pi
+  file:
+    path: "{{ downloads_location }}"
+    state: directory
+    mode: 0755
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Download Apache Hadoop
+  get_url:
+    url: https://archive.apache.org/dist/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz
+    dest: "{{ downloads_location }}/hadoop-3.3.0.tar.gz"
+    mode: 0744
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Make Hadoop destination folder
+  file:
+    path: "{{ installation_home }}"
+    state: directory
+    mode: 0755
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Unzip Hadoop tar file
+  unarchive:
+    src: "{{ downloads_location }}/hadoop-3.3.0.tar.gz"
+    remote_src: yes 
+    dest: "{{ installation_home }}"
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Remove existing Hadoop installation
+  file: 
+    name: "{{ hadoop_home }}"
+    state: absent
+  become_method: sudo
+
+- name: Move Hadoop installation to it's intended home dir 
+  command: mv "{{ installation_home }}/hadoop-3.3.0/" "{{ hadoop_home }}"
+  become_method: sudo

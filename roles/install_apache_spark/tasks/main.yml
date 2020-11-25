@@ -1,0 +1,52 @@
+---
+# tasks file for install_apache_spark
+- name: Print downloads_location var
+  debug:
+    msg: "{{ downloads_location }}"
+
+- name: Make downloads folder on Pi
+  file:
+    path: "{{ downloads_location }}"
+    state: directory
+    mode: 0755
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Download Apache Spark
+  get_url:
+    url: https://archive.apache.org/dist/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
+    dest: "{{ downloads_location }}/spark-3.0.1-bin-hadoop2.7.tgz"
+    mode: 0744
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Make Spark destination folder
+  file:
+    path: "{{ installation_home }}"
+    state: directory
+    mode: 0755
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Unzip Apache Spark tar file
+  unarchive:
+    src: "{{ downloads_location }}/spark-3.0.1-bin-hadoop2.7.tgz"
+    remote_src: yes 
+    dest: "{{ installation_home }}"
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Remove existing Spark installation
+  file: 
+    name: "{{ spark_home }}"
+    state: absent
+  become_method: sudo
+
+- name: Move Spark installation to it's intended home dir 
+  command: mv "{{ installation_home }}/spark-3.0.1-bin-hadoop2.7/" "{{ spark_home }}"
+  become_method: sudo
+

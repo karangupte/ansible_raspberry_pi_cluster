@@ -1,0 +1,8 @@
+---
+# File / Directory owners 
+owner: pi
+group: pi
+
+# Download location 
+downloads_location: "/home/pi/downloads"
+installation_home: "/opt"
