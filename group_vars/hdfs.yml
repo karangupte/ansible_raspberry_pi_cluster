@@ -7,8 +7,8 @@ resource_manager_port: 9000
 mapreduce_framework_name: yarn
 
 # Hadoop and Spark home 
-hadoop_home: "{{ installation_home }}/hadoop_tmp"
-spark_home: "{{ installation_home }}/spark_tmp"
+hadoop_home: "{{ installation_home }}/hadoop"
+spark_home: "{{ installation_home }}/spark"
 
 # Hadoop and Spark conf home 
 hadoop_conf_home: "{{ hadoop_home }}/etc/hadoop"
