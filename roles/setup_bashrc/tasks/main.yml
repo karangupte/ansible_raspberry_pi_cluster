@@ -1,5 +1,10 @@
 ---
 # tasks file for setup_bashrc
+
+- name: Get JAVA_HOME
+  shell: dirname $(dirname $(readlink -f $(which javac)))
+  register: get_java_home_output
+
 # We delete and then recreate this block so that after every run, this block is at the end of bashrc. 
 # If you wish to maintain the position of the block within bashrc, comment out the first step in this role.
 - name: Delete the existing Ansible managed block of Environment Variables within bashrc
@@ -13,7 +18,35 @@
   blockinfile:
     path: /home/{{ ansible_user }}/.bashrc
     block: |
-      export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+      export JAVA_HOME={{ get_java_home_output.stdout }}
+      export HADOOP_HOME={{ hadoop_home }}
+      export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+      export SPARK_HOME={{ spark_home }}
+      export PATH=$PATH:$SPARK_HOME/bin
+
+      export HADOOP_HOME_WARN_SUPPRESS=1
+      export HADOOP_ROOT_LOGGER="WARN,DRFA"
+      export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+      export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
+
+      export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_PREFIX}/lib/native
+      export HADOOP_OPTS="-Djava.library.path=$HADOOP_PREFIX/lib"
+    marker: "# ---------- {mark} ANSIBLE MANAGED BLOCK (DO NOT MODIFY) ------------"
+    backup: yes
+    state: present
+
+- name: Delete the existing Ansible managed block of Environment Variables within .profile
+  blockinfile:
+    path: /home/{{ ansible_user }}/.profile
+    block: ""
+    marker: "# ---------- {mark} ANSIBLE MANAGED BLOCK (DO NOT MODIFY) ------------"
+    backup: yes
+
+- name: Insert Ansible managed block of Environment Variables within .profile
+  blockinfile:
+    path: /home/{{ ansible_user }}/.profile
+    block: |
+      export JAVA_HOME={{ get_java_home_output.stdout }}
       export HADOOP_HOME={{ hadoop_home }}
       export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
       export SPARK_HOME={{ spark_home }}
