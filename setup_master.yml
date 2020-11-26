@@ -4,12 +4,13 @@
 - hosts: master
   roles:
     - get_host_facts
+    - install_dependencies
+    # - install_docker
     - install_apache_hadoop
     - install_apache_spark
     - configure_hdfs_yarn_cluster
     - setup_bashrc
     - format_hdfs_create_required_dirs
-
   become: yes
   vars_files: 
     - group_vars/node.yml
