@@ -44,3 +44,42 @@
     group: "{{ group }}"
     mode: 0644
   become_method: sudo
+
+- name: Get JAVA_HOME
+  shell: dirname $(dirname $(readlink -f $(which javac)))
+  register: get_java_home_output
+
+# We delete and then recreate this block so that after every run, this block is at the end of bashrc. 
+# If you wish to maintain the position of the block within bashrc, comment out the first step in this role.
+- name: Delete the existing Ansible managed block of Environment Variables within hadoop-env.sh
+  blockinfile:
+    path: "{{ hadoop_conf_home }}/hadoop-env.sh"
+    block: ""
+    marker: "# ---------- {mark} ANSIBLE MANAGED BLOCK (DO NOT MODIFY) ------------"
+    backup: yes
+
+- name: Insert Ansible managed block of Environment Variables within hadoop-env.sh
+  blockinfile:
+    path: "{{ hadoop_conf_home }}/hadoop-env.sh"
+    block: |
+      export JAVA_HOME={{ get_java_home_output.stdout }}
+    marker: "# ---------- {mark} ANSIBLE MANAGED BLOCK (DO NOT MODIFY) ------------"
+    backup: yes
+    state: present
+
+- name: Remove the existing workers file in Haddop conf
+  file: 
+    name: "{{ hadoop_conf_home }}/workers"
+    state: absent
+
+- name: Insert Ansible managed block of Environment Variables within workers
+  blockinfile:
+    path: "{{ hadoop_conf_home }}/workers"
+    block: |
+      {{ item }}
+    marker: "# ---------- {mark} ANSIBLE MANAGED BLOCK (DO NOT MODIFY) {{ item }} ------------"
+    backup: no
+    create: yes
+    state: present
+  with_items: "{{ groups['workers']}}"
+
