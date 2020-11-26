@@ -1,27 +1,5 @@
 ---
 # tasks file for get_hostname_and_ip
-# - name: Read /etc/hosts
-#   slurp: 
-#     src: /etc/hosts
-#   register: etc_hosts
-#   become: yes
-#   become_method: sudo
-
-# - name: Print contents of /etc/hosts
-#   debug:
-#     msg: "{{ etc_hosts['content'] | b64decode }}"
-
-# - name: Read /etc/login.defs
-#   slurp: 
-#     src: /etc/login.defs
-#   register: login_defs
-#   become: yes
-#   become_method: sudo
-
-# - name: Print contents of /etc/login.defs
-#   debug:
-#     msg: "{{ login_defs['content'] | b64decode }}"
-
 - name: Print current Ansible Host and User
   debug: 
     msg: "{{ inventory_hostname }} - {{ ansible_user }}"
@@ -32,7 +10,6 @@
   loop: "{{ groups['master']}}"
 
 - name: Read inventory file - Worker
-  debug: 
+  debug:
     msg: "Worker: {{ item }}"
   loop: "{{ groups['workers']}}"
-
