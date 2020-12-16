@@ -1,9 +1,57 @@
 ---
 # tasks file for format_hdfs_create_required_dirs
+- name: Get JAVA_HOME
+  shell: dirname $(dirname $(readlink -f $(which javac)))
+  register: get_java_home_output
 
+- name: Print JAVA_HOME
+  debug: 
+    msg: "{{ get_java_home_output.stdout }}"
+
+- name: Stop DFS and Stop Yarn if running
+  shell: stop-dfs.sh && stop-yarn.sh
+  environment:
+    HDFS_NAMENODE_USER: "{{ ansible_user }}"
+    JAVA_HOME: "{{ get_java_home_output.stdout }}"
+    HADOOP_HOME: "{{ hadoop_home }}"
+    SPARK_HOME: "{{ spark_home }}"
+    PATH: "$PATH:/bin:/usr/bin:/bin/bash:{{ hadoop_home }}/bin:{{ hadoop_home }}/sbin:{{ spark_home}}/bin"
+  become_user: "{{ ansible_user }}"
+  args:
+    executable: /bin/bash
 
 - name: Format HDFS Namenode (This will wipe out any existing data)
   shell: hdfs namenode -format -force
+  environment:
+    HDFS_NAMENODE_USER: "{{ ansible_user }}"
+    JAVA_HOME: "{{ get_java_home_output.stdout }}"
+    HADOOP_HOME: "{{ hadoop_home }}"
+    SPARK_HOME: "{{ spark_home }}"
+    PATH: "$PATH:/bin:/usr/bin:/bin/bash:{{ hadoop_home }}/bin:{{ hadoop_home }}/sbin:{{ spark_home}}/bin"
+  become_user: "{{ ansible_user }}"
+  args:
+    executable: /bin/bash
+
+- name: Start DFS and Start Yarn
+  shell: start-dfs.sh && start-yarn.sh
+  environment:
+    HDFS_NAMENODE_USER: "{{ ansible_user }}"
+    JAVA_HOME: "{{ get_java_home_output.stdout }}"
+    HADOOP_HOME: "{{ hadoop_home }}"
+    SPARK_HOME: "{{ spark_home }}"
+    PATH: "$PATH:/bin:/usr/bin:/bin/bash:{{ hadoop_home }}/bin:{{ hadoop_home }}/sbin:{{ spark_home}}/bin"
+  become_user: "{{ ansible_user }}"
+  args:
+    executable: /bin/bash
 
 - name: Create a Spark event log directory in HDFS 
   shell: hdfs dfs -mkdir /spark-logs
+  environment:
+    HDFS_NAMENODE_USER: "{{ ansible_user }}"
+    JAVA_HOME: "{{ get_java_home_output.stdout }}"
+    HADOOP_HOME: "{{ hadoop_home }}"
+    SPARK_HOME: "{{ spark_home }}"
+    PATH: "$PATH:/bin:/usr/bin:/bin/bash:{{ hadoop_home }}/bin:{{ hadoop_home }}/sbin:{{ spark_home}}/bin"
+  become_user: "{{ ansible_user }}"
+  args:
+    executable: /bin/bash
