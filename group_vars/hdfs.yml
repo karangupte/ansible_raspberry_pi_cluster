@@ -6,6 +6,13 @@ resource_manager_port: 9000
 # Variables for configuring the HDFS / Yarn environment
 mapreduce_framework_name: yarn
 
+# Spark version
+spark_version: "2.4.7"
+spark_built_for_hadoop_version: "2.7"
+spark_distribution_name: spark-{{ spark_version }}-bin-hadoop{{ spark_built_for_hadoop_version }}
+spark_artifact_name: spark-{{ spark_version }}-bin-hadoop{{ spark_built_for_hadoop_version }}.tgz
+spark_artifact_url: https://archive.apache.org/dist/spark/spark-{{ spark_version }}/{{ spark_artifact_name }}
+
 # Hadoop and Spark home 
 hadoop_home: "{{ installation_home }}/hadoop"
 spark_home: "{{ installation_home }}/spark"

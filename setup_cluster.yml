@@ -3,3 +3,21 @@
 
 - import_playbook: setup_master.yml
 - import_playbook: setup_workers.yml
+
+- hosts: master
+  tasks:
+    - name: Bounce DFS and Yarn services 
+      shell: stop-dfs.sh && stop-yarn.sh && start-dfs.sh && start-yarn.sh
+      environment:
+        HDFS_NAMENODE_USER: "{{ ansible_user }}"
+        JAVA_HOME: "{{ get_java_home_output.stdout }}"
+        HADOOP_HOME: "{{ hadoop_home }}"
+        SPARK_HOME: "{{ spark_home }}"
+        PATH: "$PATH:/bin:/usr/bin:/bin/bash:{{ hadoop_home }}/bin:{{ hadoop_home }}/sbin:{{ spark_home}}/bin"
+      become_user: "{{ ansible_user }}"
+      args:
+        executable: /bin/bash
+  become: yes
+  vars_files: 
+    - group_vars/node.yml
+    - group_vars/hdfs.yml

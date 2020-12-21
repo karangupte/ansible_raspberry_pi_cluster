@@ -15,8 +15,8 @@
 
 - name: Download Apache Spark
   get_url:
-    url: https://archive.apache.org/dist/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
-    dest: "{{ downloads_location }}/spark-3.0.1-bin-hadoop2.7.tgz"
+    url: "{{ spark_artifact_url }}"
+    dest: "{{ downloads_location }}/{{ spark_artifact_name }}"
     mode: 0744
     owner: "{{ owner}}"
     group: "{{ group }}"
@@ -33,7 +33,7 @@
 
 - name: Unzip Apache Spark tar file
   unarchive:
-    src: "{{ downloads_location }}/spark-3.0.1-bin-hadoop2.7.tgz"
+    src: "{{ downloads_location }}/{{ spark_artifact_name }}"
     remote_src: yes 
     dest: "{{ installation_home }}"
     owner: "{{ owner}}"
@@ -47,6 +47,6 @@
   become_method: sudo
 
 - name: Move Spark installation to it's intended home dir 
-  command: mv "{{ installation_home }}/spark-3.0.1-bin-hadoop2.7/" "{{ spark_home }}"
+  command: mv "{{ installation_home }}/{{ spark_distribution_name }}/" "{{ spark_home }}"
   become_method: sudo
 

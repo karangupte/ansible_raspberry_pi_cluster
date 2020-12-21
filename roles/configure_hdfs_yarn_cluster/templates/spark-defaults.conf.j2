@@ -33,7 +33,7 @@ spark.yarn.am.memory    {{ spark_yarn_am_memory }}
 spark.executor.memory   {{ spark_executor_memory }}
 spark.executor.cores    {{ spark_executor_cores }}
 
-spark.eventLog.enabled  true
+spark.eventLog.enabled  false
 spark.eventLog.dir hdfs://{{ groups['master'][0]}}:{{ resource_manager_port }}{{ spark_event_log_dir_hdfs }}
 
 spark.history.provider            org.apache.spark.deploy.history.FsHistoryProvider

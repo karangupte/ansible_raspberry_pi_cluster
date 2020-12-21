@@ -67,6 +67,22 @@
     backup: yes
     state: present
 
+- name: Remove the existing master file in Hadoop conf
+  file: 
+    name: "{{ hadoop_conf_home }}/master"
+    state: absent
+
+- name: Insert Ansible managed block of Environment Variables within master
+  blockinfile:
+    path: "{{ hadoop_conf_home }}/master"
+    block: |
+      {{ item }}
+    marker: "# ---------- {mark} ANSIBLE MANAGED BLOCK (DO NOT MODIFY) {{ item }} ------------"
+    backup: no
+    create: yes
+    state: present
+  with_items: "{{ groups['master']}}"
+
 - name: Remove the existing workers file in Haddop conf
   file: 
     name: "{{ hadoop_conf_home }}/workers"
