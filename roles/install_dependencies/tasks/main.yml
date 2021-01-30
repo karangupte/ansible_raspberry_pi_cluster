@@ -5,8 +5,9 @@
     update_cache: yes
   become_method: sudo
 
-- name: Install Python 3
+- name: Install Python 3, Java 8
   apt:
     name: [python3, openjdk-8-jdk]
     state: latest
   become_method: sudo    
+
