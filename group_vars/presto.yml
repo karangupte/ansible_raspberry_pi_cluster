@@ -1,0 +1,20 @@
+# Version
+presto_version: "0.247"
+
+# Artifact name / url
+presto_artifact_name: presto-server-{{ presto_version }}.tar.gz
+presto_distribution_name: presto-server-{{ presto_version }}
+presto_artifact_url: https://repo1.maven.org/maven2/com/facebook/presto/presto-server/{{ presto_version }}/presto-server-{{ presto_version }}.tar.gz
+
+# Installation and configuration locations
+presto_home: "{{ installation_home }}/presto"
+presto_data_dir: "{{ presto_home }}/data"
+presto_conf_dir: "{{ presto_home }}/etc"
+presto_catalog_dir: "{{ presto_conf_dir}}/catalog"
+
+# Presto Configuration vars
+presto_coordinator_host: 192.168.126.101
+presto_http_port: 8980
+
+# Presto Log Level: One of DEBUG, INFO, WARN, ERROR
+presto_log_level: INFO

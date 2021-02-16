@@ -1,0 +1,134 @@
+---
+# tasks file for install_presto
+- name: Make downloads folder on Pi
+  file:
+    path: "{{ downloads_location }}"
+    state: directory
+    mode: 0755
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Download Presto
+  get_url:
+    url: "{{ presto_artifact_url }}"
+    dest: "{{ downloads_location }}/{{ presto_artifact_name }}"
+    mode: 0744
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Make Installation folder
+  file:
+    path: "{{ installation_home }}"
+    state: directory
+    mode: 0755
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Unzip Presto tar file
+  unarchive:
+    src: "{{ downloads_location }}/{{ presto_artifact_name }}"
+    remote_src: yes 
+    dest: "{{ installation_home }}"
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+
+- name: Remove existing Presto installation
+  file: 
+    name: "{{ presto_home }}"
+    state: absent
+  become_method: sudo
+
+- name: Move Presto installation to it's intended home dir 
+  command: mv "{{ installation_home }}/{{ presto_distribution_name }}/" "{{ presto_home }}/"
+  become_method: sudo
+
+- name: Make relevant folders within presto home
+  file:
+    path: "{{ presto_home }}/{{ item }}"
+    state: directory
+    mode: 0755
+    owner: "{{ owner}}"
+    group: "{{ group }}"
+  become_method: sudo
+  with_items:
+    - "etc"
+    - "etc/catalog"
+    - "data"
+
+- name: Generate and copy node.properties
+  template:
+    src: roles/install_presto/templates/node.properties.j2
+    dest: "{{ presto_conf_dir }}/node.properties"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy jvm.config
+  template:
+    src: roles/install_presto/templates/jvm.config.j2
+    dest: "{{ presto_conf_dir }}/jvm.config"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy config.properties for coordinator node(s)
+  template:
+    src: roles/install_presto/templates/coordinator_config.properties.j2
+    dest: "{{ presto_conf_dir }}/config.properties"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+  when: inventory_hostname in groups['master']
+
+- name: Generate and copy config.properties for worker node(s)
+  template:
+    src: roles/install_presto/templates/coordinator_config.properties.j2
+    dest: "{{ presto_conf_dir }}/config.properties"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+  when: inventory_hostname in groups['workers']
+
+- name: Generate and copy log.properties for all node(s)
+  template:
+    src: roles/install_presto/templates/log.properties.j2
+    dest: "{{ presto_conf_dir }}/log.properties"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy catalog/jmx.properties for all node(s)
+  template:
+    src: roles/install_presto/templates/catalog-jmx.properties.j2
+    dest: "{{ presto_catalog_dir }}/jmx.properties"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy catalog/hive.properties for all node(s)
+  template:
+    src: roles/install_presto/templates/catalog-hive.properties.j2
+    dest: "{{ presto_catalog_dir }}/hive.properties"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo
+
+- name: Generate and copy catalog/postgres.properties for all node(s)
+  template:
+    src: roles/install_presto/templates/catalog-postgres.properties.j2
+    dest: "{{ presto_catalog_dir }}/postgres.properties"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: 0644
+  become_method: sudo

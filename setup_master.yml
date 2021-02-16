@@ -14,3 +14,4 @@
   vars_files: 
     - group_vars/node.yml
     - group_vars/hdfs.yml
+    - group_vars/presto.yml
