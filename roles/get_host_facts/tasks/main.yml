@@ -2,7 +2,7 @@
 # tasks file for get_hostname_and_ip
 - name: Print current Ansible Host and User
   debug: 
-    msg: "{{ inventory_hostname }} - {{ ansible_user }}"
+    msg: "{{ inventory_hostname }} - {{ ansible_host }} - {{ ansible_user }}"
 
 - name: Read inventory file - Master
   debug: 

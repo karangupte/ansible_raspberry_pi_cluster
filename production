@@ -1,7 +1,7 @@
 [master]
-'192.168.126.101'       ansible_connection=ssh        ansible_user=pi
+pi1 ansible_host='192.168.126.101'       ansible_connection=ssh        ansible_user=pi
 
 [workers]
-'192.168.126.102'       ansible_connection=ssh        ansible_user=pi
-'192.168.126.103'       ansible_connection=ssh        ansible_user=pi
-'192.168.126.104'       ansible_connection=ssh        ansible_user=pi
+pi2 ansible_host='192.168.126.102'       ansible_connection=ssh        ansible_user=pi
+pi3 ansible_host='192.168.126.103'       ansible_connection=ssh        ansible_user=pi
+pi4 ansible_host='192.168.126.104'       ansible_connection=ssh        ansible_user=pi
